@@ -37,9 +37,8 @@
 
 import sys
 import time
-import Queue
+import queue
 import logging
-
 from pc_ble_driver_py.observers     import *
 
 TARGET_DEV_NAME = "Nordic_HRM"
@@ -58,7 +57,7 @@ class HRCollector(BLEDriverObserver, BLEAdapterObserver):
     def __init__(self, adapter):
         super(HRCollector, self).__init__()
         self.adapter    = adapter
-        self.conn_q     = Queue.Queue()
+        self.conn_q     = queue.Queue()
         self.adapter.observer_register(self)
         self.adapter.driver.observer_register(self)
 
@@ -122,15 +121,15 @@ class HRCollector(BLEDriverObserver, BLEAdapterObserver):
 
         dev_name        = "".join(chr(e) for e in dev_name_list)
         address_string  = "".join("{0:02X}".format(b) for b in peer_addr.addr)
-        print('Received advertisment report, address: 0x{}, device_name: {}'.format(address_string,
-                                                                                    dev_name))
+        print(('Received advertisment report, address: 0x{}, device_name: {}'.format(address_string,
+                                                                                    dev_name)))
 
         if (dev_name == TARGET_DEV_NAME):
             self.adapter.connect(peer_addr)
 
 
     def on_notification(self, ble_adapter, conn_handle, uuid, data):
-        print('Connection: {}, {} = {}'.format(conn_handle, uuid, data))
+        print(('Connection: {}, {} = {}'.format(conn_handle, uuid, data)))
 
 
     def on_att_mtu_exchanged(self, ble_driver, conn_handle, att_mtu):
@@ -142,7 +141,7 @@ class HRCollector(BLEDriverObserver, BLEAdapterObserver):
     
 
 def main(serial_port):
-    print('Serial port used: {}'.format(serial_port))
+    print(('Serial port used: {}'.format(serial_port)))
     driver    = BLEDriver(serial_port=serial_port, auto_flash=True)
     adapter   = BLEAdapter(driver)
     collector = HRCollector(adapter)
@@ -162,7 +161,7 @@ def item_choose(item_list):
 
     while True:
         try:
-            choice = int(raw_input('Enter your choice: '))
+            choice = int(input('Enter your choice: '))
             if ((choice >= 0) and (choice < len(item_list))):
                 break
         except Exception:
